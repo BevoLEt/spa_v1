@@ -15,6 +15,7 @@ exports.index = (req, res) => {
   return res.json(user);
   //console.log(req,params.id);
 };
+
 //GET /users/1 2 ... //id 구분법 
 exports.show = (req, res) => {
     // ...GET /users/:id
@@ -30,6 +31,7 @@ exports.show = (req, res) => {
   return res.json(user);
   //console.log(req,params.id);
 };
+
 //DELETE. /users/1 2...
 exports.destroy = (req, res) => {
     // ... DELETE /users/:id

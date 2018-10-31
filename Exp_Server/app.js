@@ -1,5 +1,5 @@
 //GET '127.0.0.1:3000/users/1' -v    0w0
-
+const mongo=require('moongoose')
 const express = require('express');
 const app = express();
 const router=express.Router();
@@ -28,6 +28,9 @@ db.once('open', function callback () {
       console.log("mongodb open");
 });
 
+function createmongoSchema(){
+	temps=
+}
 
 
 

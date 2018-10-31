@@ -2,7 +2,7 @@ var TempSchema={};
 var EdisonSchema={};
 
 //use app.js const mongo=require('moongoose')
-Schema.createSchema=function(mongo){
+TempSchema.createSchema=function(mongo){
 	//mongodb part
 	var TempSchema = mongo.Schema({
 	query: String,
@@ -12,7 +12,7 @@ Schema.createSchema=function(mongo){
     inputdataall: String
 	});
 	
-	console.log('define TempSchema');
+	console.log('make TempSchema');
 
 	return TempSchema;
 };
@@ -28,16 +28,16 @@ EdisonSchema.createSchema=function(mongo){
 	jobData: String
 	});
 	
-	console.log('define EdisonSchema');
+	console.log('make EdisonSchema');
 
-	return TempSchema;
+	return mysqlSchema;
 };
 
 
 
-// compiels our schema into a model
-var TempSchema = mongo.model('TempSchema', userSchema);
-var Mysql=mongo.model('Mysql',mysqlSchema);
+// // compiels our schema into a model
+// var TempSchema = mongo.model('TempSchema', userSchema);
+// var Mysql=mongo.model('EdisonSchema',EdisonSchema.createSchema);
 
 // userSchema.methods.speak=function(){
 // 	var greeting=this.name

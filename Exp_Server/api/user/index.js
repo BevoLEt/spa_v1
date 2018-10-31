@@ -233,4 +233,4 @@ async function test_load()
 
 
 	
-module.exports=router; // app.js app.use('/users',require('./api/user')); 에서 
+//module.exports=router; // app.js app.use('/users',require('./api/user')); 에서 
