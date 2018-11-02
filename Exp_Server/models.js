@@ -1,10 +1,9 @@
-var TempSchema={};
-var EdisonSchema={};
+var Schemas={};
 
 //use app.js const mongo=require('moongoose')
-TempSchema.createSchema=function(mongo){
+Schemas.createTempSchema=function(mongo){
 	//mongodb part
-	var TempSchema = mongo.Schema({
+	var tempSchema = mongo.Schema({
 	query: String,
     name: String,
     title_1: String,
@@ -14,12 +13,12 @@ TempSchema.createSchema=function(mongo){
 	
 	console.log('make TempSchema');
 
-	return TempSchema;
+	return tempSchema;
 };
 
-EdisonSchema.createSchema=function(mongo){
+Schemas.createEdisonSchema=function(mongo){
 	//mongodb part
-	var mysqlSchema=mongo.Schema({
+	var edisonSchema=mongo.Schema({
 	cluster: String, 
 	scienceAppName: String, 
 	simulationUuid: String,
@@ -30,10 +29,8 @@ EdisonSchema.createSchema=function(mongo){
 	
 	console.log('make EdisonSchema');
 
-	return mysqlSchema;
+	return edisonSchema;
 };
-
-
 
 // // compiels our schema into a model
 // var TempSchema = mongo.model('TempSchema', userSchema);
@@ -44,7 +41,4 @@ EdisonSchema.createSchema=function(mongo){
 // 	?"Saved at Server and Name is"+this.name
 // 	:"Something wrong"
 // 	console.log(greeting);
-
-
-module.exports=EdisonSchema;
-module.exports=TempSchema;
+module.exports=Schemas;
