@@ -4,7 +4,8 @@ const express = require('express');
 const app = express();
 const bodyParser=require('body-parser');
 
-const ip='155.230.34.149';
+//const ip='155.230.34.149';
+const ip='127.0.0.1';
 const port=3000;
 
 

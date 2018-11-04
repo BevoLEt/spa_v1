@@ -59,10 +59,13 @@ router.post('/users', controller.create);
 /*----mysql part   ----*/ 
 const mysql=require('mysql');
 const port=3306;
-const host='155.230.36.70';
+//const host='155.230.36.70';
+const host='127.0.0.1'
 const user='root';
-const password='Yksuh@dblab1234';
-const database='Chicken';
+const password='640325as';
+const database='dketemp';
+//const password='Yksuh@dblab1234';
+//const database='Chicken';
 //db name, id, pw
 //define 데이터베이스에 만들어질 테이블 이름 'user'
 
