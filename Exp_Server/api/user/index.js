@@ -1,10 +1,9 @@
 //GET '127.0.0.1:3000/users/1' -v    0w0
-
 const express = require('express');
 const router=express.Router();
 const controller = require('./user.controller');
-//const mongo=require('mongoose'); // get mongoose package
 const asmysql=require('mysql2/promise');
+const mongodb=require('../../app')
 
 router.get('/users', controller.index);
 router.get('/users/:id', controller.show);
@@ -60,10 +59,13 @@ router.post('/users', controller.create);
 /*----mysql part   ----*/ 
 const mysql=require('mysql');
 const port=3306;
-const host='155.230.36.70';
+//const host='155.230.36.70';
+const host='127.0.0.1'
 const user='root';
-const password='Yksuh@dblab1234';
-const database='Chicken';
+const password='640325as';
+const database='dketemp';
+//const password='Yksuh@dblab1234';
+//const database='Chicken';
 //db name, id, pw
 //define 데이터베이스에 만들어질 테이블 이름 'user'
 
@@ -84,7 +86,8 @@ connection.connect(function(err) {
     }
     console.log('mysql is connected');
    	//var ssmysql=test_load();
-   	var ssmysql=take_simdata();
+   	var pew=check();
+   	//var ssmysql=take_simdata();
    	connection.end(function(err){
 	if(err)
 	{
@@ -97,6 +100,13 @@ connection.connect(function(err) {
    	
 });
 
+
+function check()
+{	
+	//console.dir(mongodb);
+	const pew=new mongodb.connect.models.EdisonData();
+	console.log('ok');
+}
 //new Date().toISOString().slice(0, 19).replace('T', ' '); js date->to mysql
 function take_simdata()
 {
@@ -107,19 +117,20 @@ function take_simdata()
 	var sql;
 	var name=['LCAODFTLab','2D_Comp_P','2D_Incomp_P','KFLOW_EDISON_4','KFLOW_EDISON_5','SNUFOAM_ShipRes','dmd_pol','eklgcmc2','mc_nvt','PKsimEV','Single_Cell_Electrophysiology','acuteSTMtip','BAND_DOSLab','coulombdart','gravityslingshot','PhaseDiagramSW','pianostring','roundSTMtip','UTB_FET','WaveSimulation'];	
 	
-	for(var i=0,temp=select+from+where+'=\"'+name[0]+'\" '+order; i<name.length ;i++,temp=select+from+where+'=\"'+name[i]+'\" '+order)
+	for(var i=0,temp=select+from+where+'\"'+name[0]+'\" '+order; i<name.length ;i++,temp=select+from+where+'\"'+name[i]+'\" '+order)
 	//for(var i=0,temp = "SELECT cluster, scienceAppName, simulationUuid, jobExecTime, jobStatus, jobData FROM EDSIM_SimStats_Details WHERE scienceAppName=\""+name[0]+"\" ORDER BY jobEndDt";i<name.length;i++,temp = "SELECT cluster, scienceAppName, simulationUuid, jobExecTime, jobStatus, jobData FROM EDSIM_SimStats_Details WHERE scienceAppName=\""+name[i]+"\" ORDER BY jobEndDt")
 	{
 		(function(){
 			var sql=temp;
 			connection.query(sql,  function (err, rows, fields) {
-			console.log('get data from mysql server p1');
+			console.log('get data from mysql server ');
   			//rows에는 결과 데이터 배열이, fields는 결과 데이터에 포함된 칼럼들의 이름과 유형을 포함한 상세 정보 배열이 담겨 있습니다.
   			if (err) throw err;
   			console.log(rows.length);		
   			for(var i=0;i<rows.length;i++)
     		{
-    			const nd = new Mysql();
+    			const nd=new mongodb.EdisonModel();
+    			//const nd = new Mysql();
 				nd.cluster=rows[i].cluster;
 				nd.scienceAppName=rows[i].scienceAppName; 
 				nd.simulationUuid=rows[i].simulationUuid;
@@ -132,7 +143,7 @@ function take_simdata()
   		console.log('save complete'+' '+rows[0].scienceAppName);
 		});
 		}());
-		if(i==name.length/2-1) console.log('end ssave seq');
+		if(i==name.length/2-1) console.log('end save seq');
 	}
 
 	
@@ -207,4 +218,4 @@ async function test_load()
 	}
 
 }
-//module.exports=router; // app.js app.use('/users',require('./api/user')); 에서 
+module.exports=router; // app.js app.use('/users',require('./api/user')); 에서 

@@ -1,5 +1,5 @@
 var Schemas={};
-
+//just schema ver
 //use app.js const mongo=require('moongoose')
 Schemas.createTempSchema=function(mongo){
 	//mongodb part
