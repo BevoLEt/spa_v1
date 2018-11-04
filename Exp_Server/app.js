@@ -4,8 +4,8 @@ const express = require('express');
 const app = express();
 const bodyParser=require('body-parser');
 
-//const ip='155.230.34.149';
-const ip='127.0.0.1';
+const ip='155.230.34.149';
+//const ip='127.0.0.1';
 const port=3000;
 
 
@@ -15,7 +15,7 @@ app.listen(port,ip, () => {
 });
 
 // connect to MongoDB / the name of DB is set to 'myDB_1'
-mongo.connect('mongodb://localhost/SPA_Test');
+mongo.connect('mongodb://localhost/SPA_Test2');
 // we get the pending connection to myDB running on localhost
 var db = mongo.connection;
 var EdisonModel,TempModel;
@@ -32,12 +32,13 @@ db.once('open', function callback () {
     TempSchema=Schemas.createTempSchema(mongo);
 	// complie our schema into data
 	EdisonModel=mongo.model("EdisonData",EdisonSchema);
-	console.log('EdisonModel define');
+	//console.log('EdisonModel define');
 	TempModel=mongo.model("TempData",TempSchema);
-	console.log('TempData define');
+	//console.log('TempData define');
 	}());
 
-	app.use('/users',require('./api/user')); // async ->sync 콜백사
+    app.use('/load_edison',require('./api/user/load_edison')); // express 기능이용 load_edison코드 전체실
+	//app.use('/users',require('./api/user/load_edison')); // async ->sync 콜백사
 	//users 들어오는 요청에대해 /api/user 을 사용한다.,+ index.js 의 router 클래스를 미들웨어화 시킨것을 사용하는것
 
 });
@@ -48,8 +49,7 @@ db.once('open', function callback () {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //app.use('/users',require('./api/user')); 
-//users 들어오는 요청에대해 /api/user 을 사용한다.,+ index.js 의 router 클래스를 미들웨어화 시킨것을 사용하는것
-//module.exports=EdisonModel;
+
 
 module.exports={
 	connect:db,

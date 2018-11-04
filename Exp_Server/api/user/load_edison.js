@@ -5,10 +5,10 @@ const controller = require('./user.controller');
 const asmysql=require('mysql2/promise');
 const mongodb=require('../../app')
 
-router.get('/users', controller.index);
-router.get('/users/:id', controller.show);
-router.delete('/users/:id', controller.destroy);
-router.post('/users', controller.create);
+// router.get('/users', controller.index);
+// router.get('/users/:id', controller.show);
+// router.delete('/users/:id', controller.destroy);
+// router.post('/users', controller.c행reate);
 
 //req client->server res server->client
 
@@ -59,13 +59,13 @@ router.post('/users', controller.create);
 /*----mysql part   ----*/ 
 const mysql=require('mysql');
 const port=3306;
-//const host='155.230.36.70';
-const host='127.0.0.1'
+const host='155.230.36.70';
+//const host=127.0.0.1;
 const user='root';
-const password='640325as';
-const database='dketemp';
-//const password='Yksuh@dblab1234';
-//const database='Chicken';
+// const password='640325as';
+// const database='dketemp';
+const password='Yksuh@dblab1234';
+const database='Chicken';
 //db name, id, pw
 //define 데이터베이스에 만들어질 테이블 이름 'user'
 
@@ -86,17 +86,17 @@ connection.connect(function(err) {
     }
     console.log('mysql is connected');
    	//var ssmysql=test_load();
-   	var pew=check();
-   	//var ssmysql=take_simdata();
-   	connection.end(function(err){
-	if(err)
-	{
-		console.error('mysql connection end phase error');
-		console.error(rr);
-		throw err;
-	}
-	console.error('mysql connection end');
-	});
+   	//var pew=check();
+   	var ssmysql=take_simdata();
+ //   	connection.end(function(err){
+	// if(err)
+	// {
+	// 	console.error('mysql connection end phase error');
+	// 	console.error(rr);
+	// 	throw err;
+	// }
+	// console.error('mysql connection end');
+	// });
    	
 });
 
@@ -129,7 +129,7 @@ function take_simdata()
   			console.log(rows.length);		
   			for(var i=0;i<rows.length;i++)
     		{
-    			const nd=new mongodb.EdisonModel();
+    			const nd=new mongodb.connect.models.EdisonData();
     			//const nd = new Mysql();
 				nd.cluster=rows[i].cluster;
 				nd.scienceAppName=rows[i].scienceAppName; 

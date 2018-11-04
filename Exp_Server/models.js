@@ -11,7 +11,7 @@ Schemas.createTempSchema=function(mongo){
     inputdataall: String
 	});
 	
-	console.log('make TempSchema');
+	//console.log('make TempSchema');
 
 	return tempSchema;
 };
@@ -27,7 +27,7 @@ Schemas.createEdisonSchema=function(mongo){
 	jobData: String
 	});
 	
-	console.log('make EdisonSchema');
+	//console.log('make EdisonSchema');
 
 	return edisonSchema;
 };
