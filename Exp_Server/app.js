@@ -37,8 +37,8 @@ db.once('open', function callback () {
 	//console.log('TempData define');
 	}());
 
-    app.use('/load_edison',require('./api/user/load_edison')); // express 기능이용 load_edison코드 전체실
-	//app.use('/users',require('./api/user/load_edison')); // async ->sync 콜백사
+    app.use('/parse_data',require('./api/user/parser'));
+    //app.use('/load_edison',require('./api/user/load_edison')); // express 기능이용 load_edison코드 전체실행 async ->sync 콜백
 	//users 들어오는 요청에대해 /api/user 을 사용한다.,+ index.js 의 router 클래스를 미들웨어화 시킨것을 사용하는것
 
 });

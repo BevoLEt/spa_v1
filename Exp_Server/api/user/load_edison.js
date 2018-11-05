@@ -10,52 +10,6 @@ const mongodb=require('../../app')
 // router.delete('/users/:id', controller.destroy);
 // router.post('/users', controller.c행reate);
 
-//req client->server res server->client
-
-// // connect to MongoDB / the name of DB is set to 'myDB_1'
-// mongo.connect('mongodb://localhost/Exp_Test');
- 
-// // we get the pending connection to myDB running on localhost
-// var db = mongo.connection;
-
-// // we get notified if error occurs
-// db.on('error', console.error.bind(console, 'connection error:'));
-// // executed when the connection opens
-// db.once('open', function callback () {
-//     // add your code here when opening
-//       console.log("mongodb open");
-// });
-
-// creates DB schema
-
-// var userSchema = mongo.Schema({
-// 	query: String,
-//     name: String,
-//     title_1: String,
-//     title_2: String,
-//     inputdataall: String
-// });
-
-// var mysqlSchema=mongo.Schema({
-// 	cluster: String, 
-// 	scienceAppName: String, 
-// 	simulationUuid: String,
-// 	jobExecTime: String, 
-// 	jobStatus: String,
-// 	jobData: String
-// });
-
-// //schema method
-// userSchema.methods.speak=function(){
-// 	var greeting=this.name
-// 	?"Saved at Server and Name is"+this.name
-// 	:"Something wrong"
-// 	console.log(greeting);
-// }
-// // compiels our schema into a model
-// var User = mongo.model('User', userSchema);
-// var Mysql=mongo.model('Mysql',mysqlSchema);
-
 /*----mysql part   ----*/ 
 const mysql=require('mysql');
 const port=3306;
@@ -74,8 +28,8 @@ const connection=mysql.createConnection({
 	port : port,
 	user : user,
 	password :password,
-	database: database
-
+	database: database,
+	connectTimeout : 30000
 });
 
 connection.connect(function(err) {
@@ -87,7 +41,8 @@ connection.connect(function(err) {
     console.log('mysql is connected');
    	//var ssmysql=test_load();
    	//var pew=check();
-   	var ssmysql=take_simdata();
+   	//var ssmysql=take_simdata();
+ 
  //   	connection.end(function(err){
 	// if(err)
 	// {
@@ -118,14 +73,15 @@ function take_simdata()
 	var name=['LCAODFTLab','2D_Comp_P','2D_Incomp_P','KFLOW_EDISON_4','KFLOW_EDISON_5','SNUFOAM_ShipRes','dmd_pol','eklgcmc2','mc_nvt','PKsimEV','Single_Cell_Electrophysiology','acuteSTMtip','BAND_DOSLab','coulombdart','gravityslingshot','PhaseDiagramSW','pianostring','roundSTMtip','UTB_FET','WaveSimulation'];	
 	
 	for(var i=0,temp=select+from+where+'\"'+name[0]+'\" '+order; i<name.length ;i++,temp=select+from+where+'\"'+name[i]+'\" '+order)
-	//for(var i=0,temp = "SELECT cluster, scienceAppName, simulationUuid, jobExecTime, jobStatus, jobData FROM EDSIM_SimStats_Details WHERE scienceAppName=\""+name[0]+"\" ORDER BY jobEndDt";i<name.length;i++,temp = "SELECT cluster, scienceAppName, simulationUuid, jobExecTime, jobStatus, jobData FROM EDSIM_SimStats_Details WHERE scienceAppName=\""+name[i]+"\" ORDER BY jobEndDt")
 	{
 		(function(){
 			var sql=temp;
 			connection.query(sql,  function (err, rows, fields) {
 			console.log('get data from mysql server ');
   			//rows에는 결과 데이터 배열이, fields는 결과 데이터에 포함된 칼럼들의 이름과 유형을 포함한 상세 정보 배열이 담겨 있습니다.
-  			if (err) throw err;
+  			if (err) {
+  				throw err;
+  			}
   			console.log(rows.length);		
   			for(var i=0;i<rows.length;i++)
     		{
@@ -145,8 +101,6 @@ function take_simdata()
 		}());
 		if(i==name.length/2-1) console.log('end save seq');
 	}
-
-	
 }
 
 function dtosql(date)
@@ -218,4 +172,4 @@ async function test_load()
 	}
 
 }
-module.exports=router; // app.js app.use('/users',require('./api/user')); 에서 
+module.exports=router; //app.use('/load_edison',require('./api/user/load_edison')); 에서 호출용 

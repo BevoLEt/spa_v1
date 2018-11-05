@@ -17,6 +17,7 @@
     "mongoose": "^5.2.9",
     "mysql": "^2.16.0",
     "mysql2": "^1.6.1",
+    "semantic-ui": "^2.4.2",
     "sequelize": "^4.38.0"
   },
   "devDependencies": {
