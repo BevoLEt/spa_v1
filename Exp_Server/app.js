@@ -53,6 +53,5 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 module.exports={
 	connect:db,
-	EdisonModel:EdisonModel,
-	TempModel:TempModel
+  mongo:mongo
 }

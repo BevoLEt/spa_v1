@@ -65,6 +65,7 @@ function check()
 //new Date().toISOString().slice(0, 19).replace('T', ' '); js date->to mysql
 function take_simdata()
 {
+	//jobEndDt
 	var select='SELECT cluster, scienceAppName, simulationUuid, jobExecTime, jobStatus, jobData ';
 	var from='FROM EDSIM_SimStats_Details ';
 	var where='WHERE scienceAppName='
