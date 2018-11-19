@@ -39,6 +39,7 @@ connection.connect(function(err) {
         throw err;
     }
     console.log('mysql is connected');
+    //var take_latest_ver=take_latest_set();
    	//var ssmysql=test_load();
    	//var pew=check();
    	//var ssmysql=take_simdata();
@@ -55,6 +56,49 @@ connection.connect(function(err) {
    	
 });
 
+
+function take_latest_set()
+{
+	//jobEndDt
+	var select='SELECT cluster, scienceAppName, simulationUuid, jobExecTime, jobStatus, jobData ';
+	var from='FROM EDSIM_SimStats_Details ';
+	var where='WHERE scienceAppName='
+	var order='ORDER BY jobSubmitDt DESC limit 1';
+	var sql;
+	var name=['LCAODFTLab','2D_Comp_P','2D_Incomp_P','KFLOW_EDISON_4','KFLOW_EDISON_5','SNUFOAM_ShipRes','dmd_pol','eklgcmc2','mc_nvt','PKsimEV','Single_Cell_Electrophysiology','acuteSTMtip','BAND_DOSLab','coulombdart','gravityslingshot','PhaseDiagramSW','pianostring','roundSTMtip','UTB_FET','WaveSimulation'];	
+	
+	//console.dir(mongodb);
+	for(var i=0,temp=select+from+where+'\"'+name[0]+'\" '+order; i<name.length ;i++,temp=select+from+where+'\"'+name[i]+'\" '+order)
+	{
+		(function(){
+			var sql=temp;
+			connection.query(sql,  function (err, rows, fields) {
+			console.log('get data from mysql server ');
+  			//rows에는 결과 데이터 배열이, fields는 결과 데이터에 포함된 칼럼들의 이름과 유형을 포함한 상세 정보 배열이 담겨 있습니다.
+  			if (err) {
+  				throw err;
+  			}
+  			//console.log(rows.length);
+  			//console.log(rows);		
+  			for(var i=0;i<rows.length;i++)
+    		{
+    			const nd=new mongodb.connect.models.EdisonSetData();
+    			//const nd = new Mysql();
+				nd.cluster=rows[i].cluster;
+				nd.scienceAppName=rows[i].scienceAppName; 
+				nd.simulationUuid=rows[i].simulationUuid;
+				nd.jobExecTime=rows[i].jobExecTime;
+				nd.jobStatus=rows[i].jobStatus;
+				nd.jobData=rows[i].jobData;
+				nd.save();
+				//console.log('save '+i+'/ '+rows.length);
+    		}
+  		console.log('save complete'+' '+rows[0].scienceAppName);
+		});
+		}());
+		if(i==name.length/2-1) console.log('end save seq');
+	}
+}
 
 function check()
 {	

@@ -32,6 +32,66 @@ Schemas.createEdisonSchema=function(mongo){
 	return edisonSchema;
 };
 
+Schemas.createEdisonSetSchema=function(mongo){
+	//mongodb part
+	var edisonsetSchema=mongo.Schema({
+	cluster: String, 
+	scienceAppName: String, 
+	simulationUuid: String,
+	jobExecTime: String, 
+	jobStatus: String,
+	jobData: String
+	});
+	
+	//console.log('make EdisonSchema');
+
+	return edisonsetSchema;
+};
+Schemas.createEdisonSetSchema=function(mongo){
+	//mongodb part
+	var edisonsetSchema=mongo.Schema({
+	cluster: String, 
+	scienceAppName: String, 
+	simulationUuid: String,
+	jobExecTime: String, 
+	jobStatus: String,
+	jobData: String
+	});
+	
+	//console.log('make EdisonSchema');
+
+	return edisonsetSchema;
+};
+
+Schemas.createRefine_EdisonSetSchema=function(mongo){
+	//mongodb part
+	var refine_edisonsetSchema=mongo.Schema({
+		cluster: String,
+		scienceAppName : String,
+		simulationUuid: String,
+		jobExecTime : String,
+		jobStatus : String,
+		parameter : Array,
+		values : Array	
+	});
+	
+	//console.log('make EdisonSchema');
+
+	return refine_edisonsetSchema;
+};
+
+
+// 	Schema = mongodb.mongo.Schema({
+	// 	cluster: String,
+	// 	scienceAppName : String,
+	// 	simulationUuid: String,
+	// 	jobExecTime : String,
+	// 	jobStatus : String,
+	// 	parameter : Array,
+	// 	values : Array			
+	// });
+	// Model=mongodb.mongo.model('Refine_EdisonSetData',Schema);
+
 // // compiels our schema into a model
 // var TempSchema = mongo.model('TempSchema', userSchema);
 // var Mysql=mongo.model('EdisonSchema',EdisonSchema.createSchema);

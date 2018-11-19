@@ -5,6 +5,7 @@ const app = express();
 const bodyParser=require('body-parser'); //for post method body parsing
 const ip='155.230.34.149';
 const port=3000;
+const fs=require('fs'); //for file i/o
 
 app.listen(port,ip, () => {
   console.log('ip : '+ip+' port number : '+port);
@@ -26,28 +27,104 @@ db.once('open', function callback () {
     Schemas=require('./models');
     // console.dir(Schemas);
     EdisonSchema=Schemas.createEdisonSchema(mongo);
-    TempSchema=Schemas.createTempSchema(mongo);
+    EdisonSetSchema=Schemas.createEdisonSetSchema(mongo);
+    Refine_EdisonSetSchema=Schemas.createRefine_EdisonSetSchema(mongo);
 	// complie our schema in("EdisonData",EdisonSchema);
 	//console.log('EdisonModel define');
-	TempModel=mongo.model("TempData",TempSchema);
+  EdisonModel=mongo.model("EdisonData",EdisonSchema);
+  EdisonSetModel=mongo.model("EdisonSetData",EdisonSetSchema);
+  Refine_EdisonSetModel=mongo.model("Refine_EdisonSetData",Refine_EdisonSetSchema);
+
 	//console.log('TempData define');
 	}());
 
-    //app.use('/parse_data',require('./api/user/parser')); excute parser func  
+    app.use('/parse_data',require('./api/user/parser')); //excute parser func  
     //app.use('/load_edison',require('./api/user/load_edison')); // express 기능이용 load_edison코드 전체실행 async ->sync 콜백
 	  //users 들어오는 요청에대해 /api/user 을 사용한다.,+ index.js 의 router 클래스를 미들웨어화 시킨것을 사용하는것
     //app.use ==> 두번째 인자를 사용한다.라는 의미 만약 인자가 두개일 경우 없을땐 첫번째 인자를
 });
 
 app.use(bodyParser.json()); //for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); //for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true })); //for parsing application/x-www-form-urlencoded or false..?
 //app.use('/users',require('./api/user')); 
+
+
+
 
 //web study
 
-app.locals.pretty=true; //jade html code pretty
+//call view part and set view engine
+app.locals.pretty=true; //jade html code pretty 줄바꿈도해줌
 app.set('views','./views'); //views란 템플릿이 있는 디렉토리 jade 파일은 여기에 있을거임
 app.set('view engine','jade'); //view engine 으로 jade 란 템플릿 사용 
+
+app.get('/topic/new',function(req,res){
+  fs.readdir('data',function(err,files){
+    if(err) {
+    console.log(err);
+    res.status(500).send('Internal Server Error');
+    }
+     res.render('new',{topics:files});
+  });
+});
+
+/*app.get('/topic/:id',function(req,res){ //maybe this aprt will be database (read) 한 페이지내에서 여러가지의 리퀘스트가 이루어지게만듬
+  let id=req.params.id;
+  fs.readdir('data',function(err,files){
+    if(err) {
+    console.log(err);
+    res.status(500).send('Internal Server Error');
+    }
+    //res.render('view',{topics:files}); //filepath, send obejct to file
+  fs.readFile('data/'+id,'utf8',function(err,data){
+    if(err){
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }
+    res.render('view',{title:id,topics:files,description:data});
+  });
+ });
+});
+*/
+app.get(['/topic','/topic/:id'],function(req,res){ //maybe this aprt will be database (read) 첫번쨰인자 배열도 가능
+  fs.readdir('data',function(err,files){
+    if(err) {
+    console.log(err);
+    res.status(500).send('Internal Server Error');
+    }
+    let id=req.params.id;
+    if(id)
+    {
+    //id 값이 잇을떄 
+      fs.readFile('data/'+id,'utf8',function(err,data){
+      if(err){
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+      }
+      res.render('view',{title:id,topics:files,description:data});
+      });
+     }//id 값이 없을떄 
+    else{
+    res.render('view',{topics:files,title:'Welcome',description:'Hello, SPA'}); //filepath, send obejct to file
+  }
+  });
+});
+  
+app.post('/topic',function(req,res){
+  let title=req.body.title;
+  let desc=req.body.description;
+
+  fs.writeFile('data/'+title,desc,function(err){ // maybe this part will be database(write)..!
+    if(err){
+      res.status(500).send('Internal Server Error');
+    }
+    res.redirect('/topic/'+title); //redirect 첫번쨰인자 url로 다시보낸다/ 
+    //res.send('Hi, topic post '+title+' '+desc);
+  });
+
+});
+
+//api+html example
 app.get('/template',function(req,res){
   res.render('temp',{time:Date(),_title:'Jade'}); //temp file rendering -> send to web views에 있는 거 참조
   //2번쨰 인자에 객체전잘 하면 temp.jade 사용 가능 
@@ -58,7 +135,7 @@ app.get('/multi',function(req,res){//query string ex
 });
 
 var topic=['SPA','DKE','Help ME'];
-app.get('/topic',function(req,res){//query string ex
+app.get('/topics',function(req,res){//query string ex
   var output=`
   <a href="/topic?id=0">SPAman</a><br>
   <a href="/topic?id=1">DKEMANS</a><br>
@@ -76,7 +153,7 @@ app.get('/test/:id',function(req,res){ //semantic url 기존에 내가쓰던 /~/
   <a href="/test/0">SPAman</a><br>
   <a href="/test/1">DKEMANS</a><br>
   <a href="/test/2">Help..</a><br>
-  ${topic[req.params.id]}32
+  ${topic[req.params.id]}
   `
   res.send(output); //rest api시는 결국 얘해야함 
 });
