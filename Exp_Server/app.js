@@ -44,8 +44,8 @@ db.once('open', function callback () {
 
 app.use(bodyParser.json()); //for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); //for parsing application/x-www-form-urlencoded or false..? 
-app.use(express.static('public'));// public dir = 정적인것으로 사용할려고한다. 정적인 파일 서비스
-//public dir 에 있는 static.html 쓰고싶으면 주소 = > home/static.html 정적인 코드 
+//app.use(express.static('public'));// public dir = 정적인것으로 사용할려고한다. 정적인 파일 서비스
+app.use('/',express.static('src'));
 
 // //call view part and set view engine
 app.locals.pretty=true; //jade html code pretty 줄바꿈도해줌
