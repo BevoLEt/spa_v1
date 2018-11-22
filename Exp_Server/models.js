@@ -47,21 +47,6 @@ Schemas.createEdisonSetSchema=function(mongo){
 
 	return edisonsetSchema;
 };
-Schemas.createEdisonSetSchema=function(mongo){
-	//mongodb part
-	var edisonsetSchema=mongo.Schema({
-	cluster: String, 
-	scienceAppName: String, 
-	simulationUuid: String,
-	jobExecTime: String, 
-	jobStatus: String,
-	jobData: String
-	});
-	
-	//console.log('make EdisonSchema');
-
-	return edisonsetSchema;
-};
 
 Schemas.createRefine_EdisonSetSchema=function(mongo){
 	//mongodb part
@@ -79,7 +64,22 @@ Schemas.createRefine_EdisonSetSchema=function(mongo){
 
 	return refine_edisonsetSchema;
 };
+Schemas.createInput_EdisonSchema=function(mongo){
+	//mongodb part
+	var refine_edisonsetSchema=mongo.Schema({
+		cluster: String,
+		scienceAppName : String,
+		simulationUuid: String,
+		jobExecTime : String,
+		jobStatus : String,
+		parameter : Array,
+		values : Array	
+	});
+	
+	//console.log('make EdisonSchema');
 
+	return refine_edisonsetSchema;
+};
 
 // 	Schema = mongodb.mongo.Schema({
 	// 	cluster: String,

@@ -5,7 +5,6 @@ const app = express();
 const bodyParser=require('body-parser'); //for post method body parsing
 const ip='155.230.34.149';
 const port=3000;
-const fs=require('fs'); //for file i/o
 
 app.listen(port,ip, () => {
   console.log('ip : '+ip+' port number : '+port);
@@ -25,191 +24,34 @@ db.once('open', function callback () {
       console.log("mongodb open");
     (function createmongoSchema(){
     Schemas=require('./models');
-    // console.dir(Schemas);
     EdisonSchema=Schemas.createEdisonSchema(mongo);
     EdisonSetSchema=Schemas.createEdisonSetSchema(mongo);
     Refine_EdisonSetSchema=Schemas.createRefine_EdisonSetSchema(mongo);
-	// complie our schema in("EdisonData",EdisonSchema);
-	//console.log('EdisonModel define');
-  EdisonModel=mongo.model("EdisonData",EdisonSchema);
-  EdisonSetModel=mongo.model("EdisonSetData",EdisonSetSchema);
-  Refine_EdisonSetModel=mongo.model("Refine_EdisonSetData",Refine_EdisonSetSchema);
-
-	//console.log('TempData define');
+    Input_EdisonSchema=Schemas.createInput_EdisonSchema(mongo);
+	 // complie our schema in("EdisonData",EdisonSchema)
+    EdisonModel=mongo.model("EdisonData",EdisonSchema);
+    EdisonSetModel=mongo.model("EdisonSetData",EdisonSetSchema);
+    Refine_EdisonSetModel=mongo.model("Refine_EdisonSetData",Refine_EdisonSetSchema);
+	 Input_EdisonModel=mongo.model("Input_EdisonData",Input_EdisonSchema);
 	}());
-
-    app.use('/parse_data',require('./api/user/parser')); //excute parser func  
-    //app.use('/load_edison',require('./api/user/load_edison')); // express 기능이용 load_edison코드 전체실행 async ->sync 콜백
+    app.use('/spa',require('./apps/api/api_bunch'));
+    //app.use(require('./apps/data_control/parser')); //excute parser func  
+    //app.use(require('./apps/data_control/load_edison')); // express 기능이용 load_edison코드 전체실행 async ->sync 콜백
+    //app.use('~~'.require('~~~'));
 	  //users 들어오는 요청에대해 /api/user 을 사용한다.,+ index.js 의 router 클래스를 미들웨어화 시킨것을 사용하는것
     //app.use ==> 두번째 인자를 사용한다.라는 의미 만약 인자가 두개일 경우 없을땐 첫번째 인자를
 });
 
 app.use(bodyParser.json()); //for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); //for parsing application/x-www-form-urlencoded or false..?
-//app.use('/users',require('./api/user')); 
+app.use(bodyParser.urlencoded({ extended: true })); //for parsing application/x-www-form-urlencoded or false..? 
+app.use(express.static('public'));// public dir = 정적인것으로 사용할려고한다. 정적인 파일 서비스
+//public dir 에 있는 static.html 쓰고싶으면 주소 = > home/static.html 정적인 코드 
 
-
-
-
-//web study
-
-//call view part and set view engine
+// //call view part and set view engine
 app.locals.pretty=true; //jade html code pretty 줄바꿈도해줌
 app.set('views','./views'); //views란 템플릿이 있는 디렉토리 jade 파일은 여기에 있을거임
 app.set('view engine','jade'); //view engine 으로 jade 란 템플릿 사용 
 
-app.get('/topic/new',function(req,res){
-  fs.readdir('data',function(err,files){
-    if(err) {
-    console.log(err);
-    res.status(500).send('Internal Server Error');
-    }
-     res.render('new',{topics:files});
-  });
-});
-
-/*app.get('/topic/:id',function(req,res){ //maybe this aprt will be database (read) 한 페이지내에서 여러가지의 리퀘스트가 이루어지게만듬
-  let id=req.params.id;
-  fs.readdir('data',function(err,files){
-    if(err) {
-    console.log(err);
-    res.status(500).send('Internal Server Error');
-    }
-    //res.render('view',{topics:files}); //filepath, send obejct to file
-  fs.readFile('data/'+id,'utf8',function(err,data){
-    if(err){
-      console.log(err);
-      res.status(500).send('Internal Server Error');
-    }
-    res.render('view',{title:id,topics:files,description:data});
-  });
- });
-});
-*/
-app.get(['/topic','/topic/:id'],function(req,res){ //maybe this aprt will be database (read) 첫번쨰인자 배열도 가능
-  fs.readdir('data',function(err,files){
-    if(err) {
-    console.log(err);
-    res.status(500).send('Internal Server Error');
-    }
-    let id=req.params.id;
-    if(id)
-    {
-    //id 값이 잇을떄 
-      fs.readFile('data/'+id,'utf8',function(err,data){
-      if(err){
-        console.log(err);
-        res.status(500).send('Internal Server Error');
-      }
-      res.render('view',{title:id,topics:files,description:data});
-      });
-     }//id 값이 없을떄 
-    else{
-    res.render('view',{topics:files,title:'Welcome',description:'Hello, SPA'}); //filepath, send obejct to file
-  }
-  });
-});
-  
-app.post('/topic',function(req,res){
-  let title=req.body.title;
-  let desc=req.body.description;
-
-  fs.writeFile('data/'+title,desc,function(err){ // maybe this part will be database(write)..!
-    if(err){
-      res.status(500).send('Internal Server Error');
-    }
-    res.redirect('/topic/'+title); //redirect 첫번쨰인자 url로 다시보낸다/ 
-    //res.send('Hi, topic post '+title+' '+desc);
-  });
-
-});
-
-//api+html example
-app.get('/template',function(req,res){
-  res.render('temp',{time:Date(),_title:'Jade'}); //temp file rendering -> send to web views에 있는 거 참조
-  //2번쨰 인자에 객체전잘 하면 temp.jade 사용 가능 
-}); 
-app.get('/multi',function(req,res){//query string ex
-  res.send(req.query.id+','+req.query.name); //home/topic?id=~~ or name etc...
-  //155.230.34.149:3000/topic?name=pew&id=1
-});
-
-var topic=['SPA','DKE','Help ME'];
-app.get('/topics',function(req,res){//query string ex
-  var output=`
-  <a href="/topic?id=0">SPAman</a><br>
-  <a href="/topic?id=1">DKEMANS</a><br>
-  <a href="/topic?id=2">Help..</a><br>
-  ${topic[req.query.id]}
-  `
-  res.send(output);
-  //res.send(topic[req.query.id]); //home/topic?id=~~ or name etc...
-  //155.230.34.149:3000/topic?name=pew&id=1
-});
-
-
-app.get('/test/:id',function(req,res){ //semantic url 기존에 내가쓰던 /~/~
-    var output=`
-  <a href="/test/0">SPAman</a><br>
-  <a href="/test/1">DKEMANS</a><br>
-  <a href="/test/2">Help..</a><br>
-  ${topic[req.params.id]}
-  `
-  res.send(output); //rest api시는 결국 얘해야함 
-});
-app.get('/test/:id/:mode',function(req,res){
-  res.send(req.params.id+' '+req.params.mode);
-})
-
-app.get('/form',function(req,res){
-  res.render('form');
-});
-app.get('/form_receiver',function(req,res){
-  var title=req.query.title;
-  var desc=req.query.description;
-  res.send(title+' '+desc);
-})
-app.post('/form_receiver',function(req,res){ //post method
-  var title=req.body.title; //post 시 query가 아니라 body post는 url에 표현이 안된다 
-  var desc=req.body.description;
-  res.send('post '+title+' '+desc);
-});
-
-app.get('/',function(req,res){
-  res.send('Hello World');
-}); //home dir 들어올경우 function 
-
-app.get('/login',function(req,res){
-  res.send('<h1>login plz</h1>');
-}); //login dir 들어올경우 function  //get -> router 요청에대해 중계해주는 역할 
-
-
-app.use(express.static('public'));// public dir = 정적인것으로 사용할려고한다. 정적인 파일 서비스
-//public dir 에 있는 static.html 쓰고싶으면 주소 = > home/static.html 정적인 코드 
-app.get('/dynamic',function(req,res){//javascript+html을 통해 정적인 코드 
-  var lis='';
-  for(var i=0;i<5;i++){
-    lis=lis+'<li>coding</li>';
-  }
-  //` 작은따옴표아님
-  var time=Date();
-  var output=`
-  <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
-    DKE LAB SPA PROJECT! Dynamic ver
-    <ul>
-      ${lis}
-    </ul>
-      ${time}
-  </body>
-</html>`;
-  res.send(output)
-})
 
 module.exports={
 	connect:db,

@@ -4,13 +4,13 @@ html
 		meta(charset='utf-8')
 	body
 		h1 
-			a(href='/topic') Server Side JavaScript
+			a(href='/predict/topic') Server Side JavaScript
 		ul
 			each topic in topics
 				li
-					a(href='/topic/'+topic)=topic
+					a(href='/predict/topic/'+topic)=topic
 		artcle
 			h2=title
 			=description
 		div
-			a(href='/topic/new') new
+			a(href='/predict/topic/new') new

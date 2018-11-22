@@ -4,16 +4,17 @@ html
 		meta(charset='utf-8')
 	body
 		h1 
-			a(href='/topic') Server Side JavaScript
+			a(href='/predict/topic') Server Side JavaScript
 		ul
 			each topic in topics
 				li
-					a(href='/topic/'+topic)=topic
+					a(href='/predict/topic/'+topic)=topic
 		artcle
-			form(action='/topic' method='post')
+			form(action='/predict/topic' method='post')
 				p
 					input(type='text' name='title' placeholder='title')
 				p
 					textarea(name='description')
 				p
 					input(type='submit')
+			

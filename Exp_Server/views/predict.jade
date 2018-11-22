@@ -1,0 +1,37 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+	body
+
+		h1	DKE LAB 
+		h1	SPA 
+		h1	Simulation Provenance Analytics
+		h2  Job Status Prediction Test
+		p
+			input(type='button' name='home' value='home')
+		p
+			select id='cluster_box'
+				each element in cluster
+					option(value=element) #{element}
+			input(type='button' name='next1' value='>')
+			input(type='reset' name='back1' value='<')
+		
+			select id='temp' size=3
+				option value='' selected --choice--
+				option value='3' three
+				option value='4' four
+			input(type='submit' name='next2' value='>')
+			input(type='submit' name='back2' value='<')
+		
+			select id='temp' size=3
+				option value='' selected --choice--
+				option value='5' five
+				option value='6' six
+			p
+				input(type='submit' name='send' value='Confrim Predict')
+				input(type='reset' name='reset' value='Reset Predict')
+
+		script(src="../src/fun.js")
+
+			
