@@ -1,14 +1,74 @@
 const express = require('express');
 const router=express.Router();
 const mongodb=require('../../app');
-
-
+const R =require('r-script');
+const fs = require("fs");
 //router에 의해 바로 경로가 main folder기준으로 잡힘 시작 
 //api call ip:port/spa/~~~
 (function Test()
 { 
+  //   fs.readFileSync(__dirname+'/../r_script/ex-sync.R',function(err,data){
+  //   console.log(data);
+  // });
+
+  // fs.readFileSync('/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R','utf-8',function(err,data){
+  //   console.log(data);
+  // });
+
+  // fs.readFile('/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R','utf8',function(error,data){
+  // if(error){
+  //   console.error('ReadFile Error : ', exception);
+  // }else{
+  //   console.log(data);
+  // }
+  // });
+
+  //   fs.readFile(__dirname+'/../r_script/ex-sync.R','utf8',function(error,data){
+  // if(error){
+  //   console.error('ReadFile Error : ', exception);
+  // }else{
+  //   console.log(data);
+  // }
+  // });
+  //  R("/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R")
+  // .data("hello world",20)
+  // .call(function(err, d) {
+  //   if (err) throw err;
+  //   console.log(d);
+  // });
+
+  // R("ex-async.R")
+  // .data("hello world",20)
+  // .call(function(err, d) {
+  //   if (err) throw err;
+  //   console.log(d);
+  // });
+
+var path=__dirname+'/../r_script/ex-sync.R';
+console.log(path);
+  //console.log(__dirname);
+
+var out = R("ex-sync.R").data("hello world", 20).callSync();
+console.dir(out);
+console.log(out);
+
+
+var out = R('/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R').data("hello world", 20).callSync();
+
+console.dir(out);  
+console.log(out);
+
+
+var out = R("test.R")
+  .data("hello world", 20)
+  .callSync();
+
+console.dir(out);  
+console.log(out);
 
 }());
+
+
 //main page
 router.get('/',function(req,res){
   res.render('main');
@@ -49,7 +109,7 @@ router.get('/clusters',function(req,res){
     }
     for(let i=0;i<Refine_EdisonSetData.length;i++)
     {
-    cluster_set.add(Refine_EdisonSetData[i].cluster);
+      cluster_set.add(Refine_EdisonSetData[i].cluster);
     }
     array=Array.from(cluster_set);
     console.log(array);
@@ -80,31 +140,10 @@ router.get('/clusters/:cluster_name',function(req,res){
     res.json(array);
   });
 });
-//get scienceAppName -from cluster
-router.post('/predict/cluster/:cluster_name',function(req,res){
-  mongodb.connect.models.Refine_EdisonSetData.find({'cluster':req.body.cluster_name},function(err,Refine_EdisonSetData){
-    let scienceAppName_set=new Set();
-    let array;
-
-    console.log(req.body.cluster_name);
-    if(err)
-    {
-      console.log(err);
-      res.status(500).send('Internal Server Error');
-    }
-    for(let i=0;i<Refine_EdisonSetData.length;i++)
-    {
-    scienceAppName_set.add(Refine_EdisonSetData[i].scienceAppName);
-    }
-    array=Array.from(scienceAppName_set);
-    console.log(array);
-    res.json(array);
-  });
-});
 
 
 //get param -from cluster,scienceAppName
-router.get('/predict/cluster/:cluster_name/:scienceAppName',function(req,res){
+router.get('/clusters/:cluster_name/:scienceAppName',function(req,res){
   mongodb.connect.models.Refine_EdisonSetData.find({'scienceAppName':req.params.scienceAppName},function(err,Refine_EdisonSetData){
     let param_set=new Set();
     let array;
@@ -117,13 +156,35 @@ router.get('/predict/cluster/:cluster_name/:scienceAppName',function(req,res){
     }
     for(let i=0;i<Refine_EdisonSetData.length;i++)
     {
-    param_set.add(Refine_EdisonSetData[i].parameter);
+      param_set.add(Refine_EdisonSetData[i].parameter);
     }
     array=Array.from(param_set);
     console.log(array);
     res.json(array);
   });
 });
+http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/parameters_values?par[]=test1&par[]=test2&par[]=test3&var[]=var1&var[]=var2&var[]=var3
+//ex http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/value?par[]=test1&par[]=test2&par[]=test3
+//requset result predict result
+router.get('/clusters/:cluster_name/:scienceAppName/parameters_values',function(req,res){
+  let c=req.params.cluster_name;
+  let p=req.params.scienceAppName;
+  let e=req.params.values;
+
+  console.log(R);
+  console.log(c);
+  console.log(p);
+  console.log(req.query.par);
+  console.log(req.query.var);
+
+  var out=R("../r_script/ex-sync.R")
+    .data("hello world",20)
+    .callSync();
+
+  console.log(out); 
+  res.json(out);
+});
+
 
 //------///
 
