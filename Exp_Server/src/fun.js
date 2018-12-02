@@ -1,7 +1,36 @@
+function getClusterName () { 
+    $.ajax({
+        url : "http://155.230.34.149:3000/spa/clusters/",
+        type:'GET',
+        dataType:'json',
+        // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
+        success : function (data) {
+            // 변경된 태그 부분을 넘어온 index 값으로 찾은 뒤 on/off를 변경합니다.
+            $("#cluster_box").find("option").remove();
+            $("#cluster_box").append("<option value='' selected>--choice--</option>");
+            let i;
+            for(let i=0;i<data.length;i++)
+            {
+                $('#cluster_box').append('<option value='+data[i]+'>'+data[i]+'</option>')
+            }
+        },
+        failure:function(error){
+            alert(error.d);
+        }
+    });
+    
+}
+
 function getScienceAppName () { 
     var e = document.getElementById("cluster_box");
     var cluster_name = e.options[e.selectedIndex].value;
-
+    
+    if(cluster_name=="")
+    {
+        alert('choose cluster');
+    }
+    else
+    {
     $.ajax({
         url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name,
         type:'GET',
@@ -9,6 +38,8 @@ function getScienceAppName () {
         // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
         success : function (data) {
             // 변경된 태그 부분을 넘어온 index 값으로 찾은 뒤 on/off를 변경합니다.
+             $("#scienceappname_box").find("option").remove();
+             $("#scienceappname_box").append("<option value='' selected>--choice--</option>");
             let i;
             for(let i=0;i<data.length;i++)
             {
@@ -19,27 +50,49 @@ function getScienceAppName () {
             alert(error.d);
         }
     });
+    }
 }
-
-function reset() { 
-    var a=document.getElementById("scienceappname_box");
-    a.selectedIndex = 0;
-    var b=document.getElementById("parameter_box");
-    b.selectedIndex=0;
-    var c=document.getElementById("cluster_box");
-    c.selectedIndex = 0;
-
-   //document.getElementById("scienceappname_box").reset();
-   //document.getElementById("parameter_box").reset();
-   //document.getElementById("cluster_box").reset();
-}
-
-
 
 //ex http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/parameters_values?par[]=test1&par[]=test2&par[]=test3&var[]=var1&var[]=var2&var[]=var3
 //requset result predict result
 //router.get('/clusters/:cluster_name/:scienceAppName/parameters_values',function(req,res){
 
+function getParameter () { 
+    var a = document.getElementById("cluster_box");
+    var cluster_name = a.options[a.selectedIndex].value;
+    var e = document.getElementById("scienceappname_box");
+    var scienceappname_name = e.options[e.selectedIndex].value;
+    ///cluster/:cluster_name/:scienceAppName
+    if(cluster_name=="" || scienceappname_name=="")
+    {
+        alert('choose cluster and scienceappname name');
+    }
+    else
+    {
+    $.ajax({
+        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name,
+        type:'GET',
+        dataType:'json',
+        // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
+        success : function (data) {
+            // 변경된 태그 부분을 넘어온 index 값으로 찾은 뒤 on/off를 변경합니다.
+            $('#parameter_table > tbody').empty();
+            let i;
+            for(let i=0;i<data[0].length;i++)
+            {   
+                //if(i==0) $('#parameter_table').append('<tbody><tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
+                //else if(i==data[0].length-1) $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr></tbody>')
+                //else $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
+                $('#parameter_table').append('<tr><td>'+data[0][i]+'</td><td><input type="text" name="box'+i+'"></td></tr>')
+            }
+        },
+        failure:function(error){
+            alert(error.d);
+        }
+    });
+    }
+}
+//$('#next1').click(getScienceAppName());
 function getResult() { 
     var a = document.getElementById("cluster_box");
     var cluster_name = a.options[a.selectedIndex].value;
@@ -79,29 +132,22 @@ function getResult() {
     });
 }
 
-function getParameter () { 
-    var a = document.getElementById("cluster_box");
-    var cluster_name = a.options[a.selectedIndex].value;
-    var e = document.getElementById("scienceappname_box");
-    var scienceappname_name = e.options[e.selectedIndex].value;
-    ///cluster/:cluster_name/:scienceAppName
-    $.ajax({
-        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name,
-        type:'GET',
-        dataType:'json',
-        // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
-        success : function (data) {
-            // 변경된 태그 부분을 넘어온 index 값으로 찾은 뒤 on/off를 변경합니다.
-            let i;
-            for(let i=0;i<data[0].length;i++)
-            {   
-                $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
-                //$('#parameter_table').append('<tr><td>'+data[0][i]+'</td><td><input type="text" name="box'+i+'"></td></tr>')
-            }
-        },
-        failure:function(error){
-            alert(error.d);
-        }
-    });
+
+
+function reset_all() { 
+    $('#parameter_table > tbody').empty();
+    $("#scienceappname_box").find("option").remove();
+    $("#scienceappname_box").append("<option value='' selected>--choice--</option>");
+    $("#cluster_box").find("option").remove();
+    $("#cluster_box").append("<option value='' selected>--choice--</option>");
+
 }
-//$('#next1').click(getScienceAppName());
+
+function reset_parameter_table() { 
+    $('#parameter_table > tbody').empty();
+}
+
+function reset_scienceappname_box(){
+     $("#scienceappname_box").find("option").remove();
+     $("#scienceappname_box").append("<option value='' selected>--choice--</option>");
+}

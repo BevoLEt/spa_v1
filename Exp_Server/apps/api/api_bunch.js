@@ -75,23 +75,27 @@ router.get('/',function(req,res){
 });
 //predict page
 router.get('/predict',function(req,res){
-  mongodb.connect.models.Refine_EdisonSetData.find(function(err,Refine_EdisonSetData){
-    let cluster_set=new Set();
-    let array;
+  // mongodb.connect.models.Refine_EdisonSetData.find(function(err,Refine_EdisonSetData){
+  //   let cluster_set=new Set();
+  //   let array;
     
-    if(err)
-    {
-      console.log(err);
-      res.status(500).send('Internal Server Error');
-    }
-    for(let i=0;i<Refine_EdisonSetData.length;i++)
-    {
-    cluster_set.add(Refine_EdisonSetData[i].cluster);
-    }
-    array=Array.from(cluster_set);
-    console.log(array);
-    res.render('predict',{cluster:array});
-  });
+  //   if(err)
+  //   {
+  //     console.log(err);
+  //     res.status(500).send('Internal Server Error');
+  //   }
+  //   for(let i=0;i<Refine_EdisonSetData.length;i++)
+  //   {
+  //   cluster_set.add(Refine_EdisonSetData[i].cluster);
+  //   }
+  //   array=Array.from(cluster_set);
+  //   console.log(array);
+  //   res.render('predict',{cluster:array});   
+  //jade file need this
+  //each element in cluster
+  //        option(value=element) #{element}
+  // });
+  res.render('predict');
 });
 //body -- poset params -- get
 
@@ -112,6 +116,7 @@ router.get('/clusters',function(req,res){
       cluster_set.add(Refine_EdisonSetData[i].cluster);
     }
     array=Array.from(cluster_set);
+    console.log('call get cluster name api');
     console.log(array);
     //res.render('predict',{cluster:array});
     res.json(array);
@@ -123,8 +128,7 @@ router.get('/clusters/:cluster_name',function(req,res){
   mongodb.connect.models.Refine_EdisonSetData.find({'cluster':req.params.cluster_name},function(err,Refine_EdisonSetData){
     let scienceAppName_set=new Set();
     let array;
-
-    console.log(req.body.cluster_name);
+    
     console.log(req.params.cluster_name);
     if(err)
     {
@@ -136,6 +140,7 @@ router.get('/clusters/:cluster_name',function(req,res){
     scienceAppName_set.add(Refine_EdisonSetData[i].scienceAppName);
     }
     array=Array.from(scienceAppName_set);
+    console.log('call get scienceAppName api');
     console.log(array);
     res.json(array);
   });
@@ -159,6 +164,7 @@ router.get('/clusters/:cluster_name/:scienceAppName',function(req,res){
       param_set.add(Refine_EdisonSetData[i].parameter);
     }
     array=Array.from(param_set);
+    console.log('call get parameter api');
     console.log(array);
     res.json(array);
   });
@@ -181,6 +187,7 @@ router.get('/clusters/:cluster_name/:scienceAppName/parameters_values',function(
     .data("hello world",20)
     .callSync();
 
+  console.log('call get result api');
   console.log(out); 
   res.json(out);
 });

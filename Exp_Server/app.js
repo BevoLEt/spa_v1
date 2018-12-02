@@ -34,6 +34,7 @@ db.once('open', function callback () {
     Refine_EdisonSetModel=mongo.model("Refine_EdisonSetData",Refine_EdisonSetSchema);
 	 Input_EdisonModel=mongo.model("Input_EdisonData",Input_EdisonSchema);
 	}());
+    
     app.use('/spa',require('./apps/api/api_bunch'));
     //app.use(require('./apps/data_control/parser')); //excute parser func  
     //app.use(require('./apps/data_control/load_edison')); // express 기능이용 load_edison코드 전체실행 async ->sync 콜백
