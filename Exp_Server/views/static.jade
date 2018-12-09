@@ -1,0 +1,40 @@
+doctype html
+html
+	head
+		meta(charset='utf-8')
+		script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+		script(src="/fun.js")
+	body
+		h1
+			| DKE LAB
+		h1
+			| SPA (Simulation Provenance Analytics) FrameWork
+		h2
+			| Job Status Prediction Service  
+		p
+			input(type='button' name='home' onclick="location.href='/spa'" value='home')
+		p 
+			h4 Cluster Box
+			select(id='cluster_box')
+				option(value='null' selected) --choice--
+				each element in cluster
+					option(value=element) #{element}
+			input(type='button' name='next1' onclick='getScienceAppName()' value='Next')
+			input(type='button' name='back1' onclick='reset_scienceappname_box()' value='Undo')
+		p
+			h4 ScienceAppName Box
+			select(id='scienceappname_box')
+				option(value='null' selected) --choice--
+			input(type='button' name='next2' onclick='getParameter()' value='Next')
+			input(type='button' name='back2' onclick='reset_parameter_table()' value='Undo')
+		p
+			h4 Parameter Table
+			table(id='parameter_table' border="1")
+				thead
+					tr
+						th Parameter
+						th Value
+				tbody
+		p
+			input(type='button' name='send' onclick='getResult()' value='Estimate Time')
+			input(type='button' name='reset' onclick='reset_all()' value='Reset')

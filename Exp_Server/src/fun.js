@@ -80,10 +80,10 @@ function getParameter () {
             let i;
             for(let i=0;i<data[0].length;i++)
             {   
-                //if(i==0) $('#parameter_table').append('<tbody><tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
-                //else if(i==data[0].length-1) $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr></tbody>')
-                //else $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
-                $('#parameter_table').append('<tr><td>'+data[0][i]+'</td><td><input type="text" name="box'+i+'"></td></tr>')
+                if(i==0) $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
+                else if(i==data[0].length-1) $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
+                else $('#parameter_table').append('<tr><td class="Parameter">'+data[0][i]+'</td><td><input class= "Value" type="text" name="box'+i+'"></td></tr>')
+                //$('#parameter_table').append('<tr><td>'+data[0][i]+'</td><td><input type="text" name="box'+i+'"></td></tr>')
             }
         },
         failure:function(error){
@@ -121,9 +121,10 @@ function getResult() {
         url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name+"/parameters_values"+parameters_values,
         type:'GET',
         dataType:'json',
+        
         // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
         success : function (data) {
-            resut_label.innerText="OK";
+            resut_label.innerText=data;
             //'#result').innerHTML="OK";
         },
         failure:function(error){
@@ -138,8 +139,9 @@ function reset_all() {
     $('#parameter_table > tbody').empty();
     $("#scienceappname_box").find("option").remove();
     $("#scienceappname_box").append("<option value='' selected>--choice--</option>");
-    $("#cluster_box").find("option").remove();
-    $("#cluster_box").append("<option value='' selected>--choice--</option>");
+    $("#cluster_box option:eq(0)").prop("selected",true);
+    //$("#cluster_box").find("option").remove();
+    //$("#cluster_box").append("<option value='' selected>--choice--</option>");
 
 }
 

@@ -3,68 +3,14 @@ const router=express.Router();
 const mongodb=require('../../app');
 const R =require('r-script');
 const fs = require("fs");
+var child_process=require('child_process');
+var exec=child_process.exec;
 //router에 의해 바로 경로가 main folder기준으로 잡힘 시작 
 //api call ip:port/spa/~~~
 (function Test()
 { 
-  //   fs.readFileSync(__dirname+'/../r_script/ex-sync.R',function(err,data){
-  //   console.log(data);
-  // });
-
-  // fs.readFileSync('/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R','utf-8',function(err,data){
-  //   console.log(data);
-  // });
-
-  // fs.readFile('/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R','utf8',function(error,data){
-  // if(error){
-  //   console.error('ReadFile Error : ', exception);
-  // }else{
-  //   console.log(data);
-  // }
-  // });
-
-  //   fs.readFile(__dirname+'/../r_script/ex-sync.R','utf8',function(error,data){
-  // if(error){
-  //   console.error('ReadFile Error : ', exception);
-  // }else{
-  //   console.log(data);
-  // }
-  // });
-  //  R("/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R")
-  // .data("hello world",20)
-  // .call(function(err, d) {
-  //   if (err) throw err;
-  //   console.log(d);
-  // });
-
-  // R("ex-async.R")
-  // .data("hello world",20)
-  // .call(function(err, d) {
-  //   if (err) throw err;
-  //   console.log(d);
-  // });
-
-var path=__dirname+'/../r_script/ex-sync.R';
-console.log(path);
-  //console.log(__dirname);
-
-var out = R("ex-sync.R").data("hello world", 20).callSync();
-console.dir(out);
-console.log(out);
 
 
-var out = R('/home/dke_exp/Desktop/git/spa_v1/Exp_Server/apps/r_script/ex-sync.R').data("hello world", 20).callSync();
-
-console.dir(out);  
-console.log(out);
-
-
-var out = R("test.R")
-  .data("hello world", 20)
-  .callSync();
-
-console.dir(out);  
-console.log(out);
 
 }());
 
@@ -73,29 +19,42 @@ console.log(out);
 router.get('/',function(req,res){
   res.render('main');
 });
-//predict page
+router.get('/test/:a/:b',function(req,res){
+   var a=req.params.a;
+   var b=req.params.b;
+
+   var cmd='Rscript ./apps/api/log_wrapper.R '+a.toString()+' '+b.toString();
+
+  exec(cmd,(error,stdout,stderr)=>{
+    if(error){
+      console.error(error);
+      return ;
+    }
+    console.log(stdout);
+    res.send(stdout);
+  })
+  
+});
+//predict page  = Job Completion Time Estimation
 router.get('/predict',function(req,res){
-  // mongodb.connect.models.Refine_EdisonSetData.find(function(err,Refine_EdisonSetData){
-  //   let cluster_set=new Set();
-  //   let array;
+  mongodb.connect.models.Refine_EdisonSetData.find(function(err,Refine_EdisonSetData){
+    let cluster_set=new Set();
+    let array;
     
-  //   if(err)
-  //   {
-  //     console.log(err);
-  //     res.status(500).send('Internal Server Error');
-  //   }
-  //   for(let i=0;i<Refine_EdisonSetData.length;i++)
-  //   {
-  //   cluster_set.add(Refine_EdisonSetData[i].cluster);
-  //   }
-  //   array=Array.from(cluster_set);
-  //   console.log(array);
-  //   res.render('predict',{cluster:array});   
-  //jade file need this
-  //each element in cluster
-  //        option(value=element) #{element}
-  // });
-  res.render('predict');
+    if(err)
+    {
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }
+    for(let i=0;i<Refine_EdisonSetData.length;i++)
+    {
+    cluster_set.add(Refine_EdisonSetData[i].cluster);
+    }
+    array=Array.from(cluster_set);
+    console.log(array);
+    res.render('predict',{cluster:array});   
+  });
+  //res.render('predict');
 });
 //body -- poset params -- get
 
@@ -169,30 +128,90 @@ router.get('/clusters/:cluster_name/:scienceAppName',function(req,res){
     res.json(array);
   });
 });
-http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/parameters_values?par[]=test1&par[]=test2&par[]=test3&var[]=var1&var[]=var2&var[]=var3
+//http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/parameters_values?par[]=test1&par[]=test2&par[]=test3&var[]=var1&var[]=var2&var[]=var3
 //ex http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/value?par[]=test1&par[]=test2&par[]=test3
 //requset result predict result
 router.get('/clusters/:cluster_name/:scienceAppName/parameters_values',function(req,res){
+  let startTime=new Date().getTime();
+  console.log('call get predict result api');
+
   let c=req.params.cluster_name;
   let p=req.params.scienceAppName;
   let e=req.params.values;
+  let node2r_values='';
 
-  console.log(R);
   console.log(c);
   console.log(p);
   console.log(req.query.par);
   console.log(req.query.var);
 
-  var out=R("../r_script/ex-sync.R")
-    .data("hello world",20)
-    .callSync();
+  for(let i=0;i<req.query.var.length;i++)
+  {
+    node2r_values=node2r_values.concat(req.query.var[i]+' ');
+  }
+  //var cmd='Rscript ./apps/api/log_wrapper.R '+req.query.var[0].toString()+' '+req.query.var[1].toString();
+  var cmd='Rscript ./apps/api/wrapper.R '+node2r_values;
+  console.log(cmd);
 
-  console.log('call get result api');
-  console.log(out); 
-  res.json(out);
+  exec(cmd,(error,stdout,stderr)=>{
+    if(error){
+      throw error ;
+    }
+    console.log(stdout);
+    let endTime=new Date().getTime();
+    let resTime=(endTime-startTime)/1000;
+
+    res.json(stdout+' Time : '+resTime);
+  });
+
+  
+});
+//--- Statistics API list ---//
+//static page  = Job Completion Time Estimation
+router.get('/static',function(req,res){
+  mongodb.connect.models.Refine_EdisonSetData.find(function(err,Refine_EdisonSetData){
+    let cluster_set=new Set();
+    let array;
+    
+    if(err)
+    {
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }
+    for(let i=0;i<Refine_EdisonSetData.length;i++)
+    {
+    cluster_set.add(Refine_EdisonSetData[i].cluster);
+    }
+    array=Array.from(cluster_set);
+    console.log(array);
+    res.render('static',{cluster:array});   
+  });
+  //res.render('predict');
 });
 
 
+//get result of statistic
+router.get('/statistics/clusters/:cluster_name/:scienceAppName',function(req,res){
+  mongodb.connect.models.Refine_EdisonSetData.find({'scienceAppName':req.params.scienceAppName},function(err,Refine_EdisonSetData){
+    let param_set=new Set();
+    let array;
+
+    console.log(req.params.scienceAppName);
+    if(err)
+    {
+      console.log(err);
+      res.status(500).send('Internal Server Error');
+    }
+    for(let i=0;i<Refine_EdisonSetData.length;i++)
+    {
+      param_set.add(Refine_EdisonSetData[i].parameter);
+    }
+    array=Array.from(param_set);
+    console.log('call get statistics result api');
+    console.log(array);
+    res.json(array);
+  });
+});
 //------///
 
 

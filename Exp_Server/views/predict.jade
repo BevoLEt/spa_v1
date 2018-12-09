@@ -5,40 +5,39 @@ html
 		script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
 		script(src="/fun.js")
 	body
-
-		h1	DKE LAB 
-		h1	SPA 
-		h1	Simulation Provenance Analytics
-		h2  Job Status Prediction Test  
+		h1
+			| DKE LAB
+		h1
+			| SPA (Simulation Provenance Analytics) FrameWork
+		h2
+			| Job Completion Time Estimation   
 		p
 			input(type='button' name='home' onclick="location.href='/spa'" value='home')
-			input(type='button' name='start' onclick='getClusterName()' value='start')
-		p
-			form(action='/predict/topic' method='get')
+		p 
+			h4 Cluster Box
 			select(id='cluster_box')
 				option(value='null' selected) --choice--
-			input(type='button' name='next1' onclick='getScienceAppName()' value='>')
-			input(type='button' name='back1' onclick='reset_scienceappname_box()' value='<')
-		
+				each element in cluster
+					option(value=element) #{element}
+			input(type='button' name='next1' onclick='getScienceAppName()' value='Next')
+			input(type='button' name='back1' onclick='reset_scienceappname_box()' value='Undo')
+		p
+			h4 ScienceAppName Box
 			select(id='scienceappname_box')
 				option(value='null' selected) --choice--
-			input(type='button' name='next2' onclick='getParameter()' value='>')
-			input(type='button' name='back2' onclick='reset_parameter_table()' value='<')
-		
+			input(type='button' name='next2' onclick='getParameter()' value='Next')
+			input(type='button' name='back2' onclick='reset_parameter_table()' value='Undo')
+		p
+			h4 Parameter Table
 			table(id='parameter_table' border="1")
 				thead
 					tr
 						th Parameter
 						th Value
 				tbody
-
-			p
-				input(type='button' name='send' onclick='getResult()' value='Confrim Predict')
-				input(type='button' name='reset' onclick='reset_all()' value='Reset Predict')
-			p
-				h3 result
-				label(id='result' ) result
-
-		
-
-			
+		p
+			input(type='button' name='send' onclick='getResult()' value='Estimate Time')
+			input(type='button' name='reset' onclick='reset_all()' value='Reset')
+		p
+			h3 result
+			label(id='result' ) result
