@@ -118,7 +118,7 @@ function getResult() {
  
     ///cluster/:cluster_name/:scienceAppName
     $.ajax({
-        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name+"/parameters_values"+parameters_values,
+        url : "http://155.230.34.149:3000/spa/predict/"+cluster_name+"/"+scienceappname_name+"/parameters_values"+parameters_values,
         type:'GET',
         dataType:'json',
         
@@ -133,6 +133,79 @@ function getResult() {
     });
 }
 
+function getResult_statistics() { 
+    var a = document.getElementById("cluster_box");
+    var cluster_name = a.options[a.selectedIndex].value;
+    var e = document.getElementById("scienceappname_box");
+    var scienceappname_name = e.options[e.selectedIndex].value;
+    ///cluster/:cluster_name/:scienceAppName
+    if(cluster_name=="" || scienceappname_name=="")
+    {
+        alert('choose cluster and scienceappname name');
+    }
+    else
+    {
+    $.ajax({
+        ///statistics/clusters/:cluster_name/:scienceAppName
+        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name,
+        type:'GET',
+        dataType:'json',
+        // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
+        success : function (data) {
+            // 변경된 태그 부분을 넘어온 index 값으로 찾은 뒤 on/off를 변경합니다.
+            $('#parameter_table > tbody').empty();
+            let inner_html='';
+            for(let i=0;i<data[0].length;i++)
+            {   
+                if(i==0) inner_html=inner_html.concat("<tr><td class=\"Rank\">Rank</td><td class=\"Parameter\">"+data[0][i]+"</td>");
+                else if(i==data[0].length-1) {
+                    //inner_html=inner_html.concat('<td class=\"Parameter\">'+data[0][i]+'</td><td class=\"Count\">Count</td></tr>');
+                    inner_html=inner_html.concat('<td class=\"Parameter\">'+data[0][i]+'</td>');
+                    $('#parameter_table').append(inner_html);
+                }
+                else inner_html=inner_html.concat("<td class=\"Parameter\">"+data[0][i]+"</td>");
+                //$('#parameter_table').append('<tr><td>'+data[0][i]+'</td><td><input type="text" name="box'+i+'"></td></tr>')
+            }
+
+            $.ajax({
+                url : "http://155.230.34.149:3000/spa/statistics/"+cluster_name+"/"+scienceappname_name,
+                type:'GET',
+                dataType:'json',
+        
+                // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
+                success : function (data) {
+                    //$('#parameter_table > tbody').empty();
+                    let inner_html='';
+
+                    console.dir(data);
+                    console.dir(data[0]);
+                    console.log(data[0].count);
+                    console.log(data[0]._id[0]);
+                    for(let i=0;i<data.length;i++)
+                    {   
+                        for(let a=0;a<data[i]._id.length;a++){
+                            //console.log(data[i]._id[a]);
+                            inner_html=inner_html.concat('<td class=\"Parameter\">'+data[i]._id[a]+'</td>');
+                        }
+                        console.log(inner_html);
+                        $('#parameter_table').append("<tr><td class=\"Rank\">"+(i+1)+""+inner_html+"</td></tr>");
+                        //$('#parameter_table').append("<tr><td class=\"Rank\">"+(i+1)+""+inner_html+"</td><td class=\"Count\">"+data[i].count+"</td></tr>");
+                        inner_html='';
+                    }
+                },
+                failure:function(error){
+                    alert(error.d);
+                }
+            });
+
+            
+        },
+        failure:function(error){
+            alert(error.d);
+        }
+    });
+    }
+}
 
 
 function reset_all() { 

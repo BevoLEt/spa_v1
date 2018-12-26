@@ -5,6 +5,7 @@ const R =require('r-script');
 const fs = require("fs");
 var child_process=require('child_process');
 var exec=child_process.exec;
+
 //router에 의해 바로 경로가 main folder기준으로 잡힘 시작 
 //api call ip:port/spa/~~~
 (function Test()
@@ -131,7 +132,7 @@ router.get('/clusters/:cluster_name/:scienceAppName',function(req,res){
 //http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/parameters_values?par[]=test1&par[]=test2&par[]=test3&var[]=var1&var[]=var2&var[]=var3
 //ex http://155.230.34.149:3000/spa/clusters/EDISON-CFD/2D_Incomp_P/value?par[]=test1&par[]=test2&par[]=test3
 //requset result predict result
-router.get('/clusters/:cluster_name/:scienceAppName/parameters_values',function(req,res){
+router.get('/predict/:cluster_name/:scienceAppName/parameters_values',function(req,res){
   let startTime=new Date().getTime();
   console.log('call get predict result api');
 
@@ -167,8 +168,8 @@ router.get('/clusters/:cluster_name/:scienceAppName/parameters_values',function(
   
 });
 //--- Statistics API list ---//
-//static page  = Job Completion Time Estimation
-router.get('/static',function(req,res){
+//statistics page  = Job Completion Time Estimation
+router.get('/statistics',function(req,res){
   mongodb.connect.models.Refine_EdisonSetData.find(function(err,Refine_EdisonSetData){
     let cluster_set=new Set();
     let array;
@@ -184,33 +185,45 @@ router.get('/static',function(req,res){
     }
     array=Array.from(cluster_set);
     console.log(array);
-    res.render('static',{cluster:array});   
+    res.render('statistics',{cluster:array});   
   });
   //res.render('predict');
 });
 
 
 //get result of statistic
-router.get('/statistics/clusters/:cluster_name/:scienceAppName',function(req,res){
-  mongodb.connect.models.Refine_EdisonSetData.find({'scienceAppName':req.params.scienceAppName},function(err,Refine_EdisonSetData){
-    let param_set=new Set();
-    let array;
+router.get('/statistics/:cluster_name/:scienceAppName',function(req,res){
 
-    console.log(req.params.scienceAppName);
-    if(err)
-    {
-      console.log(err);
-      res.status(500).send('Internal Server Error');
-    }
-    for(let i=0;i<Refine_EdisonSetData.length;i++)
-    {
-      param_set.add(Refine_EdisonSetData[i].parameter);
-    }
-    array=Array.from(param_set);
-    console.log('call get statistics result api');
-    console.log(array);
-    res.json(array);
-  });
+  let name=['LCAODFTLab','2D_Comp_P','2D_Incomp_P','KFLOW_EDISON_4','KFLOW_EDISON_5','SNUFOAM_ShipRes','dmd_pol','eklgcmc2','mc_nvt','PKsimEV','Single_Cell_Electrophysiology','acuteSTMtip','BAND_DOSLab','coulombdart','gravityslingshot','PhaseDiagramSW','pianostring','roundSTMtip','UTB_FET','WaveSimulation'];
+  let model;
+  eval("model=mongodb.connect.models.Latest1_"+req.params.scienceAppName); 
+
+  console.log('call get result of statistics api');
+  model.aggregate([
+        {
+          $project:{
+            parameter:1,
+            values:1
+        }},
+        { $group: {
+            _id: "$values",
+            count: {$sum: 1}
+        }},
+        {
+          $sort:{count:-1}
+        },
+        {
+          $limit:10
+        }
+    ], function (err, result) {
+        if (err) {
+            console.log(err);
+            return;
+        }
+
+        console.log(result);
+        res.json(result);
+    });
 });
 //------///
 

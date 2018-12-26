@@ -16,6 +16,21 @@ Schemas.createTempSchema=function(mongo){
 	return tempSchema;
 };
 
+Schemas.createLatest1Schema=function(mongo){
+	//mongodb part
+	var latest1Schema=mongo.Schema({
+	cluster: String,
+	scienceAppName : String,
+	simulationUuid: String,
+	jobExecTime : String,
+	jobStatus : String,
+	parameter : Array,
+	values : Array
+	});
+
+	return latest1Schema;
+};
+
 Schemas.createEdisonSchema=function(mongo){
 	//mongodb part
 	var edisonSchema=mongo.Schema({

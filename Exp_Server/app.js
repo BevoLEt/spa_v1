@@ -16,6 +16,7 @@ mongo.connect('mongodb://localhost/SPA_Test2');
 // we get the pending connection to myDB running on localhost
 var db = mongo.connection;
 var EdisonModel,TempModel;
+var name=['LCAODFTLab','2D_Comp_P','2D_Incomp_P','KFLOW_EDISON_4','KFLOW_EDISON_5','SNUFOAM_ShipRes','dmd_pol','eklgcmc2','mc_nvt','PKsimEV','Single_Cell_Electrophysiology','acuteSTMtip','BAND_DOSLab','coulombdart','gravityslingshot','PhaseDiagramSW','pianostring','roundSTMtip','UTB_FET','WaveSimulation'];
 // we get notified if error occurs
 db.on('error', console.error.bind(console, 'connection error:'));
 // executed when the connection opens
@@ -28,11 +29,19 @@ db.once('open', function callback () {
     EdisonSetSchema=Schemas.createEdisonSetSchema(mongo);
     Refine_EdisonSetSchema=Schemas.createRefine_EdisonSetSchema(mongo);
     Input_EdisonSchema=Schemas.createInput_EdisonSchema(mongo);
+    Latest1_EdisonSchema=Schemas.createLatest1Schema(mongo);
 	 // complie our schema in("EdisonData",EdisonSchema)
     EdisonModel=mongo.model("EdisonData",EdisonSchema);
     EdisonSetModel=mongo.model("EdisonSetData",EdisonSetSchema);
     Refine_EdisonSetModel=mongo.model("Refine_EdisonSetData",Refine_EdisonSetSchema);
-	 Input_EdisonModel=mongo.model("Input_EdisonData",Input_EdisonSchema);
+	  Input_EdisonModel=mongo.model("Input_EdisonData",Input_EdisonSchema);
+    
+    for(let i=0;i<name.length;i++){
+      let latest1_EdisonModel=new Array();
+      //eval("name["+i+"]=Latest1_"+name[i]+"EdisonModel");
+      latest1_EdisonModel[i]=mongo.model('Latest1_'+name[i],Latest1_EdisonSchema);
+    }
+    
 	}());
     
     app.use('/spa',require('./apps/api/api_bunch'));
