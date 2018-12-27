@@ -32,7 +32,7 @@ function getScienceAppName () {
     else
     {
     $.ajax({
-        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name,
+        url : "http://155.230.34.149:3000/spa/scienceAppName/"+cluster_name,
         type:'GET',
         dataType:'json',
         // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
@@ -70,7 +70,7 @@ function getParameter () {
     else
     {
     $.ajax({
-        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name,
+        url : "http://155.230.34.149:3000/spa/parameter/"+cluster_name+"/"+scienceappname_name,
         type:'GET',
         dataType:'json',
         // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
@@ -103,6 +103,7 @@ function getResult() {
     var parameters_values="?";
     var resut_label=document.getElementById('result');
 
+    resut_label.innerText="Waiting...";
     for (let i=0;i<p.length;i++) {
         if(i==0) parameters_values=parameters_values.concat("par[]="+p[i].innerText);
         else parameters_values=parameters_values.concat("&par[]="+p[i].innerText);
@@ -118,7 +119,7 @@ function getResult() {
  
     ///cluster/:cluster_name/:scienceAppName
     $.ajax({
-        url : "http://155.230.34.149:3000/spa/predict/"+cluster_name+"/"+scienceappname_name+"/parameters_values"+parameters_values,
+        url : "http://155.230.34.149:3000/spa/predictResult/"+cluster_name+"/"+scienceappname_name+"/parameters_values"+parameters_values,
         type:'GET',
         dataType:'json',
         
@@ -147,7 +148,7 @@ function getResult_statistics() {
     {
     $.ajax({
         ///statistics/clusters/:cluster_name/:scienceAppName
-        url : "http://155.230.34.149:3000/spa/clusters/"+cluster_name+"/"+scienceappname_name,
+        url : "http://155.230.34.149:3000/spa/parameter/"+cluster_name+"/"+scienceappname_name,
         type:'GET',
         dataType:'json',
         // 서버로 값을 성공적으로 넘기면 처리하는 코드부분 입니다.
@@ -168,7 +169,7 @@ function getResult_statistics() {
             }
 
             $.ajax({
-                url : "http://155.230.34.149:3000/spa/statistics/"+cluster_name+"/"+scienceappname_name,
+                url : "http://155.230.34.149:3000/spa/statisticsResult/"+cluster_name+"/"+scienceappname_name,
                 type:'GET',
                 dataType:'json',
         
@@ -177,17 +178,17 @@ function getResult_statistics() {
                     //$('#parameter_table > tbody').empty();
                     let inner_html='';
 
-                    console.dir(data);
-                    console.dir(data[0]);
-                    console.log(data[0].count);
-                    console.log(data[0]._id[0]);
+                    //console.dir(data);
+                    //console.dir(data[0]);
+                    //console.log(data[0].count);
+                    //console.log(data[0]._id[0]);
                     for(let i=0;i<data.length;i++)
                     {   
                         for(let a=0;a<data[i]._id.length;a++){
                             //console.log(data[i]._id[a]);
                             inner_html=inner_html.concat('<td class=\"Parameter\">'+data[i]._id[a]+'</td>');
                         }
-                        console.log(inner_html);
+                        //console.log(inner_html);
                         $('#parameter_table').append("<tr><td class=\"Rank\">"+(i+1)+""+inner_html+"</td></tr>");
                         //$('#parameter_table').append("<tr><td class=\"Rank\">"+(i+1)+""+inner_html+"</td><td class=\"Count\">"+data[i].count+"</td></tr>");
                         inner_html='';
@@ -206,7 +207,17 @@ function getResult_statistics() {
     });
     }
 }
+function reset_all_predict() { 
+    $('#parameter_table > tbody').empty();
+    $("#scienceappname_box").find("option").remove();
+    $("#scienceappname_box").append("<option value='' selected>--choice--</option>");
+    $("#cluster_box option:eq(0)").prop("selected",true);
+    var resut_label=document.getElementById('result');
+    resut_label.innerText="--Empty--";
+    //$("#cluster_box").find("option").remove();
+    //$("#cluster_box").append("<option value='' selected>--choice--</option>");
 
+}
 
 function reset_all() { 
     $('#parameter_table > tbody').empty();
