@@ -27,19 +27,34 @@ html(lang='en')
           a.nav-link(href='/spa')
             i.fas.fa-fw.fa-chart-area
             span Home
-        li.nav-item
-          a.nav-link(href='/spa/predict')
-            i.fas.fa-fw.fa-tachometer-alt
-            span Time Estimation
-        li.nav-item
-          a.nav-link(href='/spa/statistics')
-            i.fas.fa-fw.fa-table
-            span Param Statics
+        // Content no list mode
+          li.nav-item
+            a.nav-link(href='/spa/predict')
+              i.fas.fa-fw.fa-tachometer-alt
+              span Time Estimation
+          li.nav-item
+            a.nav-link(href='/spa/statistics')
+              i.fas.fa-fw.fa-table
+              span Param Statistics
+        // Content list mode 
+        li.nav-item.dropdown
+          a#pagesDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+            i.fas.fa-fw.fa-folder
+            span Services
+          .dropdown-menu(aria-labelledby='pagesDropdown')
+            // h6.dropdown-header Login Screens:
+            a.dropdown-item(href='/spa/predict') Estimation
+            a.dropdown-item(href='/spa/statistics') Param Statics
+            // divide line
+              .dropdown-divider
+              h6.dropdown-header Other Pages:
+              a.dropdown-item(href='404.html') 404 Page
+              a.dropdown-item(href='blank.html') Blank Page
       #content-wrapper
         .container-fluid
           // Breadcrumbs
           ol.breadcrumb
-            li.breadcrumb-item.active SPA Frame Work Description
+            li.breadcrumb-item.active SPA Framework Description
           div
            h1 KNU DKE LAB
            h1 SPA (Simulation Provenance Analytics) FrameWork

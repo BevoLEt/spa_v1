@@ -139,6 +139,8 @@ function getResult_statistics() {
     var cluster_name = a.options[a.selectedIndex].value;
     var e = document.getElementById("scienceappname_box");
     var scienceappname_name = e.options[e.selectedIndex].value;
+    var r = document.getElementById("indexcount_box");
+    var indexcount=r.options[r.selectedIndex].value;
     ///cluster/:cluster_name/:scienceAppName
     if(cluster_name=="" || scienceappname_name=="")
     {
@@ -182,7 +184,8 @@ function getResult_statistics() {
                     //console.dir(data[0]);
                     //console.log(data[0].count);
                     //console.log(data[0]._id[0]);
-                    for(let i=0;i<data.length;i++)
+                    ///for(let i=0;i<data.length;i++)
+                    for(let i=0;i<indexcount;i++)
                     {   
                         for(let a=0;a<data[i]._id.length;a++){
                             //console.log(data[i]._id[a]);

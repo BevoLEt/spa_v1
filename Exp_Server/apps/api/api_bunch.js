@@ -196,6 +196,7 @@ router.get('/statisticsResult/:cluster_name/:scienceAppName',function(req,res){
 
   let name=['LCAODFTLab','2D_Comp_P','2D_Incomp_P','KFLOW_EDISON_4','KFLOW_EDISON_5','SNUFOAM_ShipRes','dmd_pol','eklgcmc2','mc_nvt','PKsimEV','Single_Cell_Electrophysiology','acuteSTMtip','BAND_DOSLab','coulombdart','gravityslingshot','PhaseDiagramSW','pianostring','roundSTMtip','UTB_FET','WaveSimulation'];
   let model;
+  let number=req.params.number;
   eval("model=mongodb.connect.models.Latest1_"+req.params.scienceAppName); 
 
   console.log('call get result of statistics api');
@@ -213,15 +214,15 @@ router.get('/statisticsResult/:cluster_name/:scienceAppName',function(req,res){
           $sort:{count:-1}
         },
         {
-          $limit:10
+          $limit: 100
         }
     ], function (err, result) {
         if (err) {
             console.log(err);
             return;
         }
-
-        console.log(result);
+        console.log('statistics api call success');
+        //console.log(result);
         res.json(result);
     });
 });
