@@ -1,0 +1,122 @@
+doctype html
+html(lang='en')
+  head
+    // Bootstrap core JavaScript
+    script(src='/vendor/jquery/jquery.min.js')
+    script(src='/vendor/bootstrap/js/bootstrap.bundle.min.js')
+    // Core plugin JavaScript
+    script(src='/vendor/jquery-easing/jquery.easing.min.js')
+    // Page level plugin JavaScript
+    script(src='/vendor/chart.js/Chart.min.js')
+    script(src='/vendor/datatables/jquery.dataTables.js')
+    script(src='/vendor/datatables/dataTables.bootstrap4.js')
+    // Custom scripts for all pages
+    script(src='/js/sb-admin.min.js')
+    // Demo scripts for this page
+    script(src='/js/demo/datatables-demo.js')
+    script(src='/js/demo/chart-area-demo.js')
+    meta(charset='utf-8')
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js")
+    script(src="/fun.js")
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    meta(name='viewport', content='width=device-width, initial-scale=1, shrink-to-fit=no')
+    meta(name='description', content='')
+    meta(name='author', content='')
+    title SPA Framework
+    // Bootstrap core CSS
+    link(href='/vendor/bootstrap/css/bootstrap.min.css', rel='stylesheet')
+    // Custom fonts for this template
+    link(href='/vendor/fontawesome-free/css/all.min.css', rel='stylesheet', type='text/css')
+    // Page level plugin CSS
+    link(href='/vendor/datatables/dataTables.bootstrap4.css', rel='stylesheet')
+    // Custom styles for this template
+    link(href='/css/sb-admin.css', rel='stylesheet')
+  body#page-top
+    nav.navbar.navbar-expand.navbar-dark.bg-dark.static-top
+      a.navbar-brand.mr-1(href='/spa') SPA Framework
+      button#sidebarToggle.btn.btn-link.btn-sm.text-white.order-1.order-sm-0(href='#')
+        i.fas.fa-bars
+    #wrapper
+      // Sidebar
+      ul.sidebar.navbar-nav
+        li.nav-item.active
+          a.nav-link(href='/spa')
+            i.fas.fa-fw.fa-chart-area
+            span Home
+        // Content no list mode
+          li.nav-item
+            a.nav-link(href='/spa/predict')
+              i.fas.fa-fw.fa-tachometer-alt
+              span Time Estimation
+          li.nav-item
+            a.nav-link(href='/spa/statistics')
+              i.fas.fa-fw.fa-table
+              span Param Statistics
+        // Content list mode 
+        li.nav-item.dropdown
+          a#pagesDropdown.nav-link.dropdown-toggle(href='#', role='button', data-toggle='dropdown', aria-haspopup='true', aria-expanded='false')
+            i.fas.fa-fw.fa-folder
+            span Services
+          .dropdown-menu(aria-labelledby='pagesDropdown')
+            // h6.dropdown-header Login Screens:
+            a.dropdown-item(href='/spa/predict') Estimation
+            a.dropdown-item(href='/spa/statistics') Param Statics
+            // divide line
+              .dropdown-divider
+              h6.dropdown-header Other Pages:
+              a.dropdown-item(href='404.html') 404 Page
+              a.dropdown-item(href='blank.html') Blank Page
+      #content-wrapper
+        .container-fluid
+          // Breadcrumbs
+          ol.breadcrumb
+            li.breadcrumb-item.active Job Parameter Statistics
+        // Body
+        .container-fluid
+          .cluster-box
+            p.h2 Cluster Box
+            br
+            p
+             select#cluster_box
+               option(value='null', selected='') --choice--
+               each element in cluster
+                option(value=element) #{element}
+             button.btn.btn-primary(type='button', name='next1',onclick='getScienceAppName()', value='Next') Next
+             button.btn.btn-primary(type='button', name='back1', onclick='reset_scienceappname_box()', value='Back') Back
+          .science-app-name-box
+            .card.mb-3
+            p.h2 Science App Name Box
+            br
+            p
+             select#scienceappname_box
+              option(vaule='null', selected='') --choice--
+             button.btn.btn-primary(type='button', name='next2', onclick='getResult_statistics()', value='Next') Next
+             button.btn.btn-primary(type='button', name='back2', onclick='reset_parameter_table()', value='Back') Back
+             br
+             br
+           p
+            .card.mb-3
+            .card-header
+             i.fas.fa-table
+              |               Parameter Rank Top  
+              br
+              br
+              select#indexcount_box.custom-select.custom-select-sm.form-control.form-control-sm(name='dataTable_length',onchange='getResult_statistics()', aria-controls='dataTable')
+                option(value='5') 5
+                option(value='10', selected='') 10
+                option(value='25') 25
+                option(value='50') 50
+                option(value='100') 100
+            .parameter-table
+             .table-responsive
+              table#parameter_table.table.table-bordered(width='10%', cellspacing='0')
+               thead
+               tbody
+            .reset-button
+             button.btn.btn-primary(type='button', name='reset', onclick='reset_all()', value='Reset') Reset
+        // Sticky Footer
+        footer.sticky-footer
+          .container.my-auto
+            .copyright.text-center.my-auto
+              span Copyright © DKE Lab @ KNU
+   
